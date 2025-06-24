@@ -1,0 +1,13 @@
+
+version: '3.9'
+services:
+
+  ULEAM:
+    image: postgres:17
+    container_name: user-db
+    ports:
+      - "5425:5432"
+    environment:
+      POSTGRES_DB: parqueadero
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres

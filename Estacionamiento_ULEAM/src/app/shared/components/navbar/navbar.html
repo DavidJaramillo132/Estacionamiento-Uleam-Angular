@@ -1,0 +1,28 @@
+<nav class="bg-red-600 border-b border-gray-200 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center">
+      <!-- Logo -->
+      <div class="">
+        <img class="h-15 w-auto " src="assets\img\global\EloyAlfaro.png" alt="ULEAM Logo">
+      </div>
+
+      <!-- Navegación principal admin-->
+      <div *ngIf="auth.rol() === 'admin'"  class="hidden md:flex space-x-6">
+        <a routerLink="/admin" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm"><i class="fa-solid fa-car"></i> Agregar Carro</a>
+        <a routerLink="/admin" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm"><i class="fa-solid fa-table-list"></i> Lista de carros</a>
+        <button (click)="logout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm">
+          Cerrar sesión
+        </button>
+      </div>
+
+      <!-- Acciones del usuario -->
+      <div *ngIf="auth.rol() === 'estudiante'" class="flex items-center space-x-4">
+        <span class="hidden md:block text-sm text-gray-600">Hola, {{ auth.username() }}</span>
+        <a routerLink="/reserva" class="text-gray-700 hover:text-red-600 font-medium"><i class="fa-solid fa-car"></i>Reservar Autos</a>
+        <button (click)="logout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm">
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

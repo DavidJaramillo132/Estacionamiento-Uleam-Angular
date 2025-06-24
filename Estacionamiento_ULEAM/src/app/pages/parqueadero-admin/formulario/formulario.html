@@ -1,0 +1,18 @@
+<section>
+    <form (ngSubmit)="addCar">
+        <label for="placa">Matricula del vehiculo</label>
+        <input type="text" id="placa" placeholder="Ej: ABC-1234" required>
+
+        <label for="conductor">Nombre del conductor</label>
+        <input type="text" id="conductor" placeholder="Ej: Juan Pérez" required>
+
+        <label for="tipo_conductor">Tipo de usuario</label>
+        <select id="tipo_conductor" required>
+            <option value="">Seleccione...</option>
+            <option value="Estudiante">Estudiante</option>
+            <option value="Docente">Docente</option>
+            <option value="Administrativo">Administrativo</option>
+            <option value="Visitante">Visitante</option>
+        </select>
+    </form>
+</section>

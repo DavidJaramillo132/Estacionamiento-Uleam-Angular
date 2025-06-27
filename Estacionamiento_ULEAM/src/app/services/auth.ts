@@ -29,7 +29,6 @@ export class AutenticadoUserService {
   }
 
   logout(): void {
-    localStorage.clear();
     this.username.set(null);
     this.email.set(null);
     this.rol.set(null);

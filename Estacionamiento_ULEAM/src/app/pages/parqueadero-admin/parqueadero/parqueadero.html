@@ -1,1 +1,36 @@
-<p>parqueadero works!</p>
+<!-- Búsqueda -->
+<input
+  type="text"
+  [(ngModel)]="busqueda"
+  placeholder="Buscar por placa..."
+  class="search-box"
+/>
+
+<!-- Repetir puertas -->
+<div *ngFor="let puerta of puertas()">
+  <h3 class="subtitle-parqueadero">Estacionamiento {{ puerta }}</h3>
+  <p>{{ puerta.disponibles }}/{{ puerta.capacidad }} espacios disponibles</p>
+
+  <div class="vehicle-grid">
+    <div
+      *ngFor="let vehiculo of puerta.vehiculos"
+      [hidden]="busqueda && !vehiculo.placa.toLowerCase().includes(busqueda.toLowerCase())"
+      class="vehicle-card"
+      [attr.data-aos]="'flip-left'"
+      [attr.data-aos-duration]="'800'"
+      [style.borderLeft]="'4px solid ' + getBorderColor(vehiculo.tipo_conductor)"
+    >
+      <h3>{{ vehiculo.placa }}</h3>
+      <p><strong>Conductor:</strong> {{ vehiculo.conductor }}</p>
+      <p><strong>Tipo:</strong> {{ vehiculo.tipo_conductor }}</p>
+      <p><strong>Ubicación:</strong> {{ vehiculo.puerta.replace('_', ' ') }}</p>
+      <div class="vehicle-meta">
+        <span>{{ vehiculo.hora_entrada }}</span>
+        <span>{{ vehiculo.fecha_entrada }}</span>
+      </div>
+      <button class="btn-salida" (click)="registrarSalida(vehiculo.placa)">
+        Registrar Salida
+      </button>
+    </div>
+  </div>
+</div>

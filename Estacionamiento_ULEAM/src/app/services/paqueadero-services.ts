@@ -5,8 +5,9 @@ export interface Vehiculo {
   name_driver: string;
   tipo_usuario: string;
   area_estacionamiento: string;
+  hora_entrada: string;
 }
-//prueba
+
 export interface AreaEstacionamiento {
   nombre: string;
   capacidad: number;
@@ -16,74 +17,69 @@ export interface AreaEstacionamiento {
 @Injectable({
   providedIn: 'root'
 })
+export class ParqueaderoService {
 
-export class PaqueaderoServices {
-  puerta_1: number = 7;
-  puerta_2: number = 7;
-  puerta_3: number = 6;
-
-
-  vehiculos_puerta1 = signal<Vehiculo[]>(
-    JSON.parse(localStorage.getItem('vehiculos_puerta1') || '[]')
-  )
-  vehiculos_puerta2 = signal<Vehiculo[]>(
-    JSON.parse(localStorage.getItem('vehiculos_puerta2') || '[]')
-  )
-  vehiculos_puerta3 = signal<Vehiculo[]>(
-    JSON.parse(localStorage.getItem('vehiculos_puerta3') || '[]')
-  )
+  // Lista de áreas de estacionamiento usando la interfaz
+  areas = signal<AreaEstacionamiento[]>([
+    {
+      nombre: 'puerta1',
+      capacidad: 7,
+      vehiculos: JSON.parse(localStorage.getItem('vehiculos_puerta1') || '[]')
+    },
+    {
+      nombre: 'puerta2',
+      capacidad: 7,
+      vehiculos: JSON.parse(localStorage.getItem('vehiculos_puerta2') || '[]')
+    },
+    {
+      nombre: 'puerta3',
+      capacidad: 6,
+      vehiculos: JSON.parse(localStorage.getItem('vehiculos_puerta3') || '[]')
+    }
+  ]);
 
   guardarVehiculosEnLocalStorage(): void {
-    localStorage.setItem('vehiculos_puerta1', JSON.stringify(this.vehiculos_puerta1()));
-    localStorage.setItem('vehiculos_puerta2', JSON.stringify(this.vehiculos_puerta2()));
-    localStorage.setItem('vehiculos_puerta3', JSON.stringify(this.vehiculos_puerta3()));
+    for (const area of this.areas()) {
+      localStorage.setItem(`vehiculos_${area.nombre}`, JSON.stringify(area.vehiculos));
+    }
   }
 
   agregarVehiculo(vehiculo: Vehiculo, puerta: string): void {
-    switch (puerta) {
-      case 'puerta1':
-        this.vehiculos_puerta1.update(lista => [...lista, vehiculo]);
-        break;
-      case 'puerta2':
-        this.vehiculos_puerta2.update(lista => [...lista, vehiculo]);
-        break;
-      case 'puerta3':
-        this.vehiculos_puerta3.update(lista => [...lista, vehiculo]);
-        break;
-      default:
-        break;
-    }
+    this.areas.update(areas =>
+      areas.map(area => {
+        if (area.nombre === puerta && area.vehiculos.length < area.capacidad) {
+          return {
+            ...area,
+            vehiculos: [...area.vehiculos, vehiculo]
+          };
+        }
+        return area;
+      })
+    );
+    this.guardarVehiculosEnLocalStorage();
   }
 
   eliminarVehiculo(matricula: string, puerta: string): void {
-    switch (puerta) {
-      case 'puerta1':
-        this.vehiculos_puerta1.update(lista => lista.filter(vehiculo => vehiculo.matricula !== matricula));
-        break;
-      case 'puerta2':
-        this.vehiculos_puerta2.update(lista => lista.filter(vehiculo => vehiculo.matricula !== matricula));
-        break;
-      case 'puerta3':
-        this.vehiculos_puerta3.update(lista => lista.filter(vehiculo => vehiculo.matricula !== matricula));
-        break;
-      default:
-        break;
-    }
+    this.areas.update(areas =>
+      areas.map(area => {
+        if (area.nombre === puerta) {
+          return {
+            ...area,
+            vehiculos: area.vehiculos.filter(v => v.matricula !== matricula)
+          };
+        }
+        return area;
+      })
+    );
     this.guardarVehiculosEnLocalStorage();
   }
+
   obtenerVehiculos(puerta: string): Vehiculo[] {
-    switch (puerta) {
-      case 'puerta1':
-        return this.vehiculos_puerta1();
-      case 'puerta2':
-        return this.vehiculos_puerta2();
-      case 'puerta3':
-        return this.vehiculos_puerta3();
-      default:
-        return [];
-    }
+    const area = this.areas().find(a => a.nombre === puerta);
+    return area ? area.vehiculos : [];
+  }
+
+  obtenerArea(puerta: string): AreaEstacionamiento | undefined {
+    return this.areas().find(a => a.nombre === puerta);
   }
 }
-
-
-

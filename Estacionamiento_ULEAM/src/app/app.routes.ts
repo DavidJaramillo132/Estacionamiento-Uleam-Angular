@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { LoginComponent } from './pages/login/login'; // Asegúrate de que la ruta sea correcta
+import { LoginComponent } from './pages/login/login'; 
 import { App } from './app';
-import { ParqueaderoAdmin } from './pages/parqueadero-admin/parqueadero-admin'; // Asegúrate de que la ruta sea correcta
-
+import { ParqueaderoAdmin } from './pages/parqueadero-admin/parqueadero-admin'; 
+import { UsuarioNormal } from './pages/usuario-normal/usuario-normal';
 export const routes: Routes = [
   { 
     path : "",
@@ -13,7 +13,11 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'admin',
+    path: 'estudiante',
+    component: UsuarioNormal
+  },
+
+  {path: 'admin', 
     component: ParqueaderoAdmin
   },
   

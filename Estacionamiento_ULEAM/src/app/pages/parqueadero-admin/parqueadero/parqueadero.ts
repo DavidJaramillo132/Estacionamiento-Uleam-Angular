@@ -1,26 +1,43 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PaqueaderoServices } from '../../../services/paqueadero-services';
-import { FormsModule } from '@angular/forms';@Component({
+import { ParqueaderoService  } from '../../../services/paqueadero-services';
+import { FormsModule } from '@angular/forms';
+import { AreaEstacionamiento } from '../../../services/paqueadero-services';
+@Component({
   selector: 'app-parqueadero',
   imports: [CommonModule, FormsModule],
   templateUrl: './parqueadero.html',
   styleUrl: './parqueadero.scss'
 })
+
+
 export class Parqueadero {
-  busqueda: any = '';
-  
-  getBorderColor(tipo_conductor: string): void {
 
-    
+  constructor(private parqueaderoServices: ParqueaderoService ) {}
+
+registrarSalida(matricula: string): void {
+  // Buscar el área donde está el vehículo
+  const area = this.parqueaderoServices.areas().find(area =>
+    area.vehiculos.some(vehiculo => vehiculo.matricula === matricula)
+  );
+
+  if (!area) {
+    alert(`Vehículo con matrícula ${matricula} no encontrado.`);
+    return;
   }
 
-  registrarSalida(matricula: string): void {
-    // Lógica para registrar la salida del vehículo
+  // Usar el método del servicio para eliminarlo correctamente
+  this.parqueaderoServices.eliminarVehiculo(matricula, area.nombre);
+  alert(`Vehículo con matrícula ${matricula} ha salido del parqueadero.`);
+}
+
+  puertas(): AreaEstacionamiento[]{
+    return this.parqueaderoServices.areas();
   }
 
-  puertas(): string[]{
-    return ['Puerta 1', 'Puerta 2', 'Puerta 3']
+  getCarrosEstacionados(puerta: string):  number {
+    const area = this.parqueaderoServices.areas().find(area => area.nombre === puerta);
+    return area ? area.vehiculos.length : 0;
   }
-  
+
 }

@@ -1,31 +1,46 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PaqueaderoServices } from '../../../services/paqueadero-services';
+import { ParqueaderoService } from '../../../services/paqueadero-services';
 import { FormsModule } from '@angular/forms';
+import { AutenticadoUserService } from '../../../services/auth'; // Importa el servicio de autenticación
 @Component({
   selector: 'app-formulario',
   imports: [CommonModule, FormsModule],
   templateUrl: './formulario.html',
   styleUrl: './formulario.scss'
 })
-export class Formulario {
+
+export class Formulario implements OnInit {
   matricula: string = '';
   name_driver: string = '';
   tipo_conductor: string = '';
   area_estacionamiento: string = '';
+  hora_entrada: string = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   matriculaRegex = /^[A-Z]{3}-\d{4}$/;
+  rol: string = '';
+
+  constructor(private paqueaderoService: ParqueaderoService, public auth: AutenticadoUserService) { }
+
+  get puerta_seleccionada() {
+    return this.paqueaderoService.areas().find(area => area.nombre === this.area_estacionamiento);
+  }
+  ngOnInit(): void {
+
+  }
 
 
-  constructor(private paqueaderoService: PaqueaderoServices) { }
-
-  fomulario_validaciones() {
+  fomulario_validaciones(): boolean {
     if (!this.matricula || !this.name_driver || !this.tipo_conductor || !this.area_estacionamiento) {
       alert('Por favor, complete todos los campos.');
       return false;
     }
 
     if (!this.matriculaRegex.test(this.matricula)) {
-      alert('La matricula debe tener el formato AAA-0000');
+      alert('La matrícula debe tener el formato AAA-0000 ');
+      return false;
+    }
+    if (this.paqueaderoService.areas().some(area => area.vehiculos.some(vehiculo => vehiculo.matricula === this.matricula))) {
+      alert('La matrícula ya está registrada en el sistema.');
       return false;
     }
 
@@ -40,29 +55,22 @@ export class Formulario {
       return false;
     }
 
-    if (this.paqueaderoService.puerta_1 <= 0 && this.area_estacionamiento === 'puerta1') {
-      alert('No hay espacio disponible en la puerta 1.');
-      return false;
-    }
-    if (this.paqueaderoService.puerta_2 <= 0 && this.area_estacionamiento === 'puerta2') {
-      alert('No hay espacio disponible en la puerta 2.');
-      return false;
-    }
-    if (this.paqueaderoService.puerta_3 <= 0 && this.area_estacionamiento === 'puerta3') {
-      alert('No hay espacio disponible en la puerta 3.');
+    if (this.puerta_seleccionada && this.puerta_seleccionada.vehiculos.length >= this.puerta_seleccionada.capacidad) {
+      alert('No hay espacio disponible en la ' + this.area_estacionamiento);
       return false;
     }
 
     return true;
   }
 
-  addcar(): void {
+  addcar_admin(): void {
     if (this.fomulario_validaciones()) {
       const vehiculo = {
         matricula: this.matricula,
         name_driver: this.name_driver,
         tipo_usuario: this.tipo_conductor,
-        area_estacionamiento: this.area_estacionamiento
+        area_estacionamiento: this.area_estacionamiento,
+        hora_entrada: this.hora_entrada
       };
       alert('Vehículo agregado correctamente');
       this.paqueaderoService.agregarVehiculo(vehiculo, this.area_estacionamiento);
@@ -72,8 +80,11 @@ export class Formulario {
       alert('Por favor, corrija los errores en el formulario.');
     }
   }
+  addcar_noAdmin(): void {
+    
+  }
 
-  resetForm() {
+  resetForm(): void {
     this.matricula = '';
     this.name_driver = '';
     this.tipo_conductor = '';

@@ -15,23 +15,23 @@ import { AutenticadoUserService } from '../../services/auth'; // Importa el serv
 export class LoginComponent {
   email: string = '';
   password: string = '';
-  rol: string = ''; 
+  rol: string = '';
   error: boolean = false;
-  
+
   MensajeError: string = '';
-  
+
   constructor(private router: Router, private auth: AutenticadoUserService) { }
-  
-    login(): void {
-      console.log('Intentando iniciar sesión con:', this.email, this.password); 
-      this.auth.login(this.email, this.password).subscribe({
-        next: (res: any) => {
+
+  login(): void {
+    console.log('Intentando iniciar sesión con:', this.email, this.password);
+    this.auth.login(this.email, this.password).subscribe({
+      next: (res: any) => {
         if (res.success) {
           if (res.rol === 'admin') {
             console.log('Usuario autenticado ' + res.nombre + ' con rol: ' + res.rol + ' y correo: ' + res.email);
             this.guardarUsuario(res.nombre, res.email, res.rol);
             this.router.navigate(['/admin']);
-            
+
           } else {
             this.router.navigate(['/estudiante']);
             this.guardarUsuario(res.nombre, res.email, res.rol);
@@ -49,8 +49,8 @@ export class LoginComponent {
   guardarUsuario(username: string, email: string, rol: string): void {
     this.auth.saveUserData(username, email, rol);
   }
-  
-  
+
+
 };
 
 

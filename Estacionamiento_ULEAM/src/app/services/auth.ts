@@ -13,7 +13,7 @@ export class AutenticadoUserService {
   rol = signal<string | null>(localStorage.getItem('rol'));
   email = signal<string | null>(localStorage.getItem('email'));
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
   login(email: string, password: string): Observable<any> {
     return this.http.post(this.apiUrl, { email, password });
@@ -29,10 +29,28 @@ export class AutenticadoUserService {
   }
 
   logout(): void {
-    localStorage.clear();
+    // Limpiar las variables en tu servicio (opcional, si las usas con reactive forms)
     this.username.set(null);
     this.email.set(null);
     this.rol.set(null);
+
+    // Limpiar también el localStorage
+    localStorage.removeItem('user');
+    localStorage.removeItem('email');
+    localStorage.removeItem('rol');
+
     this.router.navigate(['/login']);
   }
+
+  getusername(): string | null {
+    return this.username();
+  }
+  getEmail(): string | null {
+    return this.email();
+  }
+  getRol(): string | null {
+    return this.rol();
+  }
+  
+
 }

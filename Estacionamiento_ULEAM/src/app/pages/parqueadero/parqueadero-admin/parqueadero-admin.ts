@@ -3,15 +3,16 @@ import { CommonModule } from '@angular/common';
 import { ParqueaderoService  } from '../../../services/paqueadero-services';
 import { FormsModule } from '@angular/forms';
 import { AreaEstacionamiento } from '../../../services/paqueadero-services';
+import { Formulario } from '../formulario/formulario';
 @Component({
-  selector: 'app-parqueadero',
-  imports: [CommonModule, FormsModule],
-  templateUrl: './parqueadero.html',
-  styleUrl: './parqueadero.scss'
+  selector: 'app-parqueadero-admin',
+  imports: [CommonModule, FormsModule, Formulario],
+  templateUrl: './parqueadero-admin.html',
+  styleUrl: './parqueadero-admin.scss'
 })
 
 
-export class Parqueadero {
+export class ParqueaderoAdmin {
 
   constructor(private parqueaderoServices: ParqueaderoService ) {}
 

@@ -7,18 +7,18 @@
       </div>
 
       <!-- Navegación principal admin-->
-      <div *ngIf="auth.rol() === 'admin'"  class="hidden md:flex space-x-6">
-        <a routerLink="/admin" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm"><i class="fa-solid fa-car"></i> Agregar Carro</a>
-        <a routerLink="/admin" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm"><i class="fa-solid fa-table-list"></i> Lista de carros</a>
+      <div *ngIf="auth.rol() === 'admin'" class="flex items-center space-x-4">
+        <!-- <a routerLink="/admin" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm"><i class="fa-solid fa-car"></i> Agregar Carro</a>
+        <a routerLink="/admin" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm"><i class="fa-solid fa-table-list"></i> Lista de carros</a> -->
         <button (click)="logout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm">
           Cerrar sesión
         </button>
       </div>
 
       <!-- Acciones del usuario -->
-      <div *ngIf="auth.rol() !== 'admin'" class="flex items-center space-x-4">
+      <div *ngIf="auth.rol() === 'estudiante' || auth.rol() === 'visitante' || auth.rol() === 'administrativo' || auth.rol() === 'docente'" class="flex items-center space-x-4">
         <span class="bg-red-600 text-white px-3 py-1 rounded-lg text-sm">Hola, {{ auth.username() }}</span>
-        <a routerLink="/reserva" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm"><i class="fa-solid fa-car"></i>Reservar Autos</a>
+        <!-- <a routerLink="/reserva" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm"><i class="fa-solid fa-car"></i>Reservar Autos</a> -->
         <button (click)="logout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm">
           Cerrar sesión
         </button>

@@ -80,8 +80,21 @@ export class Formulario implements OnInit {
       alert('Por favor, corrija los errores en el formulario.');
     }
   }
+
   addcar_noAdmin(): void {
-    
+    if(this.fomulario_validaciones()) {
+      const vehiculo = {
+        matricula: this.matricula,
+        name_driver: this.auth.username()!,
+        tipo_usuario: this.auth.rol()!,
+        area_estacionamiento: this.area_estacionamiento,
+        hora_entrada: this.hora_entrada
+      };
+      alert('Vehículo agregado correctamente');
+      this.paqueaderoService.agregarVehiculo(vehiculo, this.area_estacionamiento);
+      this.paqueaderoService.guardarVehiculosEnLocalStorage();
+      this.resetForm();
+    }
   }
 
   resetForm(): void {

@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { LoginComponent } from './pages/login/login'; 
 import { App } from './app';
-import { ParqueaderoAdmin } from './pages/parqueadero-admin/parqueadero-admin'; 
+import { ParqueaderoAdmin } from './pages/parqueadero/parqueadero-admin/parqueadero-admin'; 
 import { UsuarioNormal } from './pages/usuario-normal/usuario-normal';
 export const routes: Routes = [
   { 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Formulario } from '../parqueadero-admin/formulario/formulario';
+import { Formulario } from '../parqueadero/formulario/formulario';
 @Component({
   selector: 'app-usuario-normal',
   imports: [Formulario],

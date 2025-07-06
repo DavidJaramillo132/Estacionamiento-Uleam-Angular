@@ -1,25 +1,26 @@
 <section class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
     <h1 class="text-4xl font-bold text-red-500 py-2 pr-70 mb-6">Control de Parqueadero - ULEAM</h1>
 
-    <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-[37em]" >
-        <h2 class="text-3xl text-[40px] font-bold text-center text-gray-800 mb-6">Registrar Entrada</h2>
+    <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-[37em]">
         <form (ngSubmit)="addcar_admin()" class="flex flex-col space-y-4" *ngIf="auth.rol() === 'admin'">
+            <h2 class="text-3xl text-[40px] font-bold text-center text-gray-800 mb-6">Registrar Entrada</h2>
 
             <div class="flex flex-col">
                 <label class="text-gray-700 font-semibold text-[25px]">Matrícula del vehículo</label>
-                <input [(ngModel)]="matricula" name="matricula" type="text"  placeholder="Ej: ABC-1234" required
+                <input [(ngModel)]="matricula" name="matricula" type="text" placeholder="Ej: ABC-1234" required
                     class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-500 text-[20px]" />
             </div>
 
-            <div class="flex flex-col" >
+            <div class="flex flex-col">
                 <label class="text-gray-700 font-medium text-[25px]">Nombre del conductor</label>
-                <input [(ngModel)]="name_driver" name="nombre_conducto" type="text"  placeholder="Ej: Juan Pérez" required
+                <input [(ngModel)]="name_driver" name="nombre_conducto" type="text" placeholder="Ej: Juan Pérez"
+                    required
                     class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-500 text-[20px]" />
             </div>
 
-            <div class="flex flex-col"  >
+            <div class="flex flex-col">
                 <label class="text-gray-700 font-medium text-[25px]">Tipo de usuario</label>
-                <select  required [(ngModel)]="tipo_conductor" name="tipo_conductor"
+                <select required [(ngModel)]="tipo_conductor" name="tipo_conductor"
                     class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-500 text-[20px]">
                     <option value="">Seleccione...</option>
                     <option value="Estudiante">Estudiante</option>
@@ -31,8 +32,9 @@
 
             <div class="flex flex-col">
                 <label class="text-gray-700 font-medium text-[25px]">Lugar de estacionamiento:</label>
-                <select  [(ngModel)]="area_estacionamiento" name="area_estacionamiento"
-                class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-500 text-[20px]" required>
+                <select [(ngModel)]="area_estacionamiento" name="area_estacionamiento"
+                    class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-500 text-[20px]"
+                    required>
                     <option value="">Seleccione...</option>
                     <option value="puerta1">Estacionamiento Puerta 1</option>
                     <option value="puerta2">Estacionamiento Puerta 2</option>
@@ -45,19 +47,22 @@
                 Registrar
             </button>
         </form>
-        
-        <form (ngSubmit)="addcar_noAdmin()" class="flex flex-col space-y-4" *ngIf="auth.rol() !== 'admin'">
+
+        <form (ngSubmit)="addcar_noAdmin()" class="flex flex-col space-y-4"
+            *ngIf="auth.rol() !== 'admin' && !auth.reservacion()">
+            <h2 class="text-3xl text-[40px] font-bold text-center text-gray-800 mb-6">Reservar Entrada</h2>
 
             <div class="flex flex-col">
                 <label class="text-gray-700 font-semibold text-[25px]">Matrícula del vehículo</label>
-                <input [(ngModel)]="matricula" name="matricula" type="text"  placeholder="Ej: ABC-1234" required
+                <input [(ngModel)]="matricula" name="matricula" type="text" placeholder="Ej: ABC-1234" required
                     class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-500 text-[20px]" />
             </div>
 
             <div class="flex flex-col">
                 <label class="text-gray-700 font-medium text-[25px]">Lugar de estacionamiento:</label>
-                <select  [(ngModel)]="area_estacionamiento" name="area_estacionamiento"
-                class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-500 text-[20px]" required>
+                <select [(ngModel)]="area_estacionamiento" name="area_estacionamiento"
+                    class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-500 text-[20px]"
+                    required>
                     <option value="">Seleccione...</option>
                     <option value="puerta1">Estacionamiento Puerta 1</option>
                     <option value="puerta2">Estacionamiento Puerta 2</option>
@@ -65,11 +70,22 @@
                 </select>
             </div>
 
+            <div class="flex flex-col">
+                <label class="text-gray-700 font-medium text-[25px]">Hora de llegada</label>
+                <input [(ngModel)]="hora_llegada" name="hora_llegada" type="time" required
+                    class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-500 text-[20px]" />
+            </div>
+
             <button type="submit"
-                class="mt-4 bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition ">
+                class="mt-4 bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition">
                 Registrar
             </button>
         </form>
+
+        <div *ngIf="auth.rol() !== 'admin' && auth.reservacion()">
+            <h2 class="text-3xl text-[40px] font-bold text-center text-gray-800 mb-6">Reserva Exitosa</h2>
+            <p class="text-lg text-gray-600">Su vehículo ha sido registrado exitosamente.</p>
+            <button class="mt-4 bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition" (click)="cancelarReservacion()">Cancelar la reservacion</button>
+        </div>
     </div>
 </section>
-

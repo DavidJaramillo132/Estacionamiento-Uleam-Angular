@@ -82,4 +82,5 @@ export class ParqueaderoService {
   obtenerArea(puerta: string): AreaEstacionamiento | undefined {
     return this.areas().find(a => a.nombre === puerta);
   }
+
 }

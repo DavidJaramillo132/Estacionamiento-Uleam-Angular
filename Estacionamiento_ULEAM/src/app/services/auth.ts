@@ -6,13 +6,14 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
+
 export class AutenticadoUserService {
   private apiUrl = 'http://localhost:3000/api/login';
 
   username = signal<string | null>(localStorage.getItem('user'));
   rol = signal<string | null>(localStorage.getItem('rol'));
   email = signal<string | null>(localStorage.getItem('email'));
-
+  reservacion = signal<boolean>(localStorage.getItem('reservacion') === 'true');
   constructor(private http: HttpClient, private router: Router) { }
 
   login(email: string, password: string): Observable<any> {
@@ -23,13 +24,14 @@ export class AutenticadoUserService {
     localStorage.setItem('user', username);
     localStorage.setItem('email', email);
     localStorage.setItem('rol', rol);
+    localStorage.setItem('reservacion', this.reservacion().toString());
     this.username.set(username);
     this.email.set(email);
     this.rol.set(rol);
+    this.reservacion.set(this.reservacion());
   }
 
   logout(): void {
-    // Limpiar las variables en tu servicio (opcional, si las usas con reactive forms)
     this.username.set(null);
     this.email.set(null);
     this.rol.set(null);
@@ -38,9 +40,15 @@ export class AutenticadoUserService {
     localStorage.removeItem('user');
     localStorage.removeItem('email');
     localStorage.removeItem('rol');
-
+    localStorage.removeItem('reservacion');
     this.router.navigate(['/login']);
   }
+
+  setReservacion(valor: boolean): void {
+  this.reservacion.set(valor);
+  localStorage.setItem('reservacion', valor.toString());
+}
+
 
   getusername(): string | null {
     return this.username();
@@ -51,6 +59,11 @@ export class AutenticadoUserService {
   getRol(): string | null {
     return this.rol();
   }
-  
+  getReservacion(): boolean {
+    console.log("Reservacion: ", this.reservacion());
+  return this.reservacion();
+}
+
+
 
 }

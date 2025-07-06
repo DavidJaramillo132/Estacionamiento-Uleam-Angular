@@ -33,7 +33,7 @@ export class LoginComponent {
             this.router.navigate(['/admin']);
 
           } else {
-            this.router.navigate(['/estudiante']);
+            this.router.navigate(['/usuario']);
             this.guardarUsuario(res.nombre, res.email, res.rol);
           }
         } else {

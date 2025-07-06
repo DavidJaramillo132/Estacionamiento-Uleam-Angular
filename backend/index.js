@@ -36,6 +36,7 @@ app.post("/api/login/", async (req, res) => {
                 email: usuario.email,
                 // password: usuario.contrasena,
                 rol: usuario.rol,
+                estacionamiento: usuario.reservacion_estacionamiento,
             });
         } else {
             res.json({
@@ -46,8 +47,35 @@ app.post("/api/login/", async (req, res) => {
     } catch (error){
         console.error("Error al iniciar sesion:", error);
     }
-
 });
+
+app.post("/api/reservar", async (req, res) => {
+  console.log("Datos recibidos en /api/reservar:", req.body);
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ success: false, message: "Email es requerido" });
+  }
+
+  try {
+    const result = await db.query(
+      "UPDATE usuario SET reservacion_estacionamiento = true WHERE email = $1",
+      [email]
+    );
+
+    if (result.rowCount === 1) {
+      res.json({ success: true, message: "Reservación actualizada correctamente" });
+    } else {
+      res.status(404).json({ success: false, message: "Usuario no encontrado" });
+    }
+  } catch (error) {
+    console.error("Error al actualizar la reservación:", error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
+});
+
+
+
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

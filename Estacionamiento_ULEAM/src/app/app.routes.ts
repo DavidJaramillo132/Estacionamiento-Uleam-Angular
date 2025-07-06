@@ -5,23 +5,25 @@ import { LoginComponent } from './pages/login/login';
 import { App } from './app';
 import { ParqueaderoAdmin } from './pages/parqueadero/parqueadero-admin/parqueadero-admin'; 
 import { UsuarioNormal } from './pages/usuario-normal/usuario-normal';
+import { Authseguridad } from './seguridad/auth-guard';
 export const routes: Routes = [
-  { 
-    path : "",
-    children : [
-      { path: 'login', component: LoginComponent }, // Página por defecto
-    ]
-  },
-  {
-    path: 'estudiante',
-    component: UsuarioNormal
-  },
+  { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirigir raíz a /login
 
-  {path: 'admin', 
-    component: ParqueaderoAdmin
-  },
-  
-  { path: '**', redirectTo: '' } // Redirección para rutas no encontradas
+  { path: 'login', component: LoginComponent }, // Componente de login
+
+  { path: 'usuario', 
+    component: UsuarioNormal,
+    canActivate: [Authseguridad],
+    data: { rol: 'estudiante'}
+   },
+
+  { path: 'admin', 
+    component: ParqueaderoAdmin,
+    canActivate: [Authseguridad],
+    data: { rol: 'admin'}
+   },
+
+  { path: '**', redirectTo: 'login' } // Redirección para rutas no encontradas
 ];
 
 @NgModule({

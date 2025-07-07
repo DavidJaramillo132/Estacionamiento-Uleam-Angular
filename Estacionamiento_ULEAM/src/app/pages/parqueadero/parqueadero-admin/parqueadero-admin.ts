@@ -26,9 +26,9 @@ export class ParqueaderoAdmin {
       alert(`Vehículo con matrícula ${matricula} no encontrado.`);
       return;
     }
-
+    
     // Usar el método del servicio para eliminarlo correctamente
-    this.parqueaderoServices.eliminarVehiculo(matricula, area.nombre);
+    this.parqueaderoServices.eliminarVehiculo(matricula, area.nombre, '');
     alert(`Vehículo con matrícula ${matricula} ha salido del parqueadero.`);
   }
 

@@ -72,8 +72,16 @@ export class ParqueaderoService {
         return area;
       })
     );
- 
-    
+    this.areas.update(areas =>
+      areas.map(area => {
+        return {
+          ...area,
+          vehiculos: area.vehiculos.filter(vehiculo => vehiculo.email_driver !== email)
+        };
+      })
+    );
+
+
     this.guardarVehiculosEnLocalStorage();
   }
 

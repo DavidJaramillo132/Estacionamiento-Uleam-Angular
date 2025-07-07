@@ -50,17 +50,18 @@ app.post("/api/login/", async (req, res) => {
 });
 
 app.post("/api/reservar", async (req, res) => {
-  console.log("Datos recibidos en /api/reservar:", req.body);
-  const { email } = req.body;
+  const { email, reservacion_realizada } = req.body;
 
   if (!email) {
     return res.status(400).json({ success: false, message: "Email es requerido" });
   }
 
   try {
+    console.log("Reservación actualizada para el usuario:", email, "con estado nuevo:", reservacion_realizada);
+
     const result = await db.query(
-      "UPDATE usuario SET reservacion_estacionamiento = true WHERE email = $1",
-      [email]
+      "UPDATE usuario SET reservacion_estacionamiento = $1 WHERE email = $2",
+      [reservacion_realizada, email]
     );
 
     if (result.rowCount === 1) {
@@ -73,6 +74,7 @@ app.post("/api/reservar", async (req, res) => {
     res.status(500).json({ success: false, message: "Error del servidor" });
   }
 });
+
 
 
 

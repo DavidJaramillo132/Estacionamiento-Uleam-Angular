@@ -16,6 +16,7 @@ export class Formulario implements OnInit {
   matricula: string = '';
   name_driver: string = '';
   tipo_conductor: string = '';
+  email_driver: string = '';
   area_estacionamiento: string = '';
   hora_llegada: string = '';
   hora_entrada: string = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -31,8 +32,7 @@ export class Formulario implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('inicializa formulario con ' + this.auth.getReservacion());
-    this.reservacion = this.auth.getReservacion();
+    this.reservacion = this.auth.getReservacion() || false;
   }
 
   get puerta_seleccionada() {
@@ -82,6 +82,7 @@ export class Formulario implements OnInit {
       const vehiculo = {
         matricula: this.matricula,
         name_driver: this.name_driver,
+        email_driver: "",
         tipo_usuario: this.tipo_conductor,
         area_estacionamiento: this.area_estacionamiento,
         hora_entrada: this.hora_entrada
@@ -96,6 +97,10 @@ export class Formulario implements OnInit {
   }
 
   addcar_noAdmin(): void {
+    const reservacion = {
+      email: this.auth.getEmail() || '',
+      reservacion_realizada: true
+    };
     this.name_driver = this.auth.username()!;
     this.tipo_conductor = this.auth.rol()!;
     this.hora_llegada = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -104,6 +109,7 @@ export class Formulario implements OnInit {
       const vehiculo = {
         matricula: this.matricula,
         name_driver: this.name_driver,
+        email_driver: this.auth.getEmail() || '',
         tipo_usuario: this.tipo_conductor,
         area_estacionamiento: this.area_estacionamiento,
         hora_entrada: this.hora_llegada
@@ -116,13 +122,15 @@ export class Formulario implements OnInit {
 
       // Actualizar en la base de datos que el usuario ya reservó
       const email = this.auth.getEmail();
+      const reservacion_realizada = true;
+      console.log("Reservacion realizada: ", reservacion_realizada, " Email: ", email);
       if (email) {
-        this.http.post('http://localhost:3000/api/reservar', { email }).subscribe((res: any) => {
+        this.http.post('http://localhost:3000/api/reservar', { reservacion_realizada, email }).subscribe((res: any) => {
           if (res.success) {
             this.reservacion = true;
-            this.auth.setReservacion(true); // <- usa este
+            this.auth.setReservacion(reservacion); 
           } else {
-            console.error("No se pudo actualizar la reservación");
+            console.error("No se pudo actualizar la reservacion");
           }
         });
       }
@@ -130,12 +138,31 @@ export class Formulario implements OnInit {
   }
 
   cancelarReservacion(): void {
-    this.reservacion = false;
-    this.auth.setReservacion(false); // <- este también
-    localStorage.setItem('reservacion', 'false'); // <- Añade esta línea
-    alert('Reservación cancelada');
+    const reservacion_realizada = false;
+    const reservacion = {
+      email: this.auth.getEmail() || '',
+      reservacion_realizada: false
+    };
+    this.auth.setReservacion(reservacion);
+    localStorage.setItem('reservacion', 'false');
 
+    this.paqueaderoService.eliminarVehiculo(this.matricula, this.area_estacionamiento, reservacion.email);
+
+    if (reservacion.email){
+        this.http.post('http://localhost:3000/api/reservar', { reservacion_realizada, email: reservacion.email }).subscribe((res: any) => {
+          if (res.success) {
+            this.reservacion = true;
+            this.auth.setReservacion(reservacion); 
+          } else {
+            console.error("No se pudo actualizar la reservacion");
+          }
+        });
+    }
+
+
+    alert('Reservación cancelada');
   }
+
   resetForm(): void {
     this.matricula = '';
     this.name_driver = '';

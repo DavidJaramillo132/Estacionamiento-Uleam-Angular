@@ -28,13 +28,12 @@ export class LoginComponent {
       next: (res: any) => {
         if (res.success) {
           if (res.rol === 'admin') {
-            console.log('Usuario autenticado ' + res.nombre + ' con rol: ' + res.rol + ' y correo: ' + res.email);
-            this.guardarUsuario(res.nombre, res.email, res.rol);
+            this.guardarUsuario(res.nombre, res.email, res.rol, res.estacionamiento);
             this.router.navigate(['/admin']);
-
+            
           } else {
+            this.guardarUsuario(res.nombre, res.email, res.rol, res.estacionamiento);
             this.router.navigate(['/usuario']);
-            this.guardarUsuario(res.nombre, res.email, res.rol);
           }
         } else {
           this.MensajeError = 'Credenciales incorrectas';
@@ -46,11 +45,8 @@ export class LoginComponent {
     });
   }
 
-  guardarUsuario(username: string, email: string, rol: string): void {
-    this.auth.saveUserData(username, email, rol);
+  guardarUsuario(username: string, email: string, rol: string, reservacion: boolean): void {
+
+    this.auth.saveUserData(username, email, rol, reservacion);
   }
-
-
 };
-
-

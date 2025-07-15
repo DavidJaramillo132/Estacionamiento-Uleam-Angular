@@ -2,7 +2,7 @@
     <h1 class="text-4xl font-bold text-red-500 py-2 pr-70 mb-6">Control de Parqueadero - ULEAM</h1>
 
     <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-[37em]">
-        <form (ngSubmit)="addcar_admin()" class="flex flex-col space-y-4" *ngIf="auth.rol() === 'admin'">
+        <form (ngSubmit)="addcar_admin()" class="flex flex-col space-y-4" *ngIf="auth.rol() === 'administrativo'">
             <h2 class="text-3xl text-[40px] font-bold text-center text-gray-800 mb-6">Registrar Entrada</h2>
 
             <div class="flex flex-col">
@@ -23,10 +23,10 @@
                 <select required [(ngModel)]="tipo_conductor" name="tipo_conductor"
                     class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-500 text-[20px]">
                     <option value="">Seleccione...</option>
-                    <option value="Estudiante">Estudiante</option>
-                    <option value="Docente">Docente</option>
-                    <option value="Administrativo">Administrativo</option>
-                    <option value="Visitante">Visitante</option>
+                    <option value="estudiante">Estudiante</option>
+                    <option value="docente">Docente</option>
+                    <option value="administrativo">Administrativo</option>
+                    <option value="visitante">Visitante</option>
                 </select>
             </div>
 
@@ -49,7 +49,7 @@
         </form>
 
         <form (ngSubmit)="addcar_noAdmin()" class="flex flex-col space-y-4"
-            *ngIf="auth.rol() !== 'admin' && !auth.reservacion()">
+            *ngIf="auth.rol() !== 'administrativo' && !auth.reservacion()">
             <h2 class="text-3xl text-[40px] font-bold text-center text-gray-800 mb-6">Reservar Entrada</h2>
 
             <div class="flex flex-col">
@@ -82,7 +82,7 @@
             </button>
         </form>
 
-        <div *ngIf="auth.rol() !== 'admin' && auth.reservacion()">
+        <div *ngIf="auth.rol() !== 'administrativo' && auth.reservacion()">
             <h2 class="text-3xl text-[40px] font-bold text-center text-gray-800 mb-6">Reserva Exitosa</h2>
             <p class="text-lg text-gray-600">Su vehículo ha sido registrado exitosamente.</p>
             <button class="mt-4 bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition" (click)="cancelarReservacion()">Cancelar la reservacion</button>

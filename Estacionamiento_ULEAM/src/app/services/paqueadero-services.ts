@@ -61,29 +61,25 @@ export class ParqueaderoService {
   }
 
   eliminarVehiculo(matricula: string, puerta: string, email: string): void {
+    console.log("Eliminando vehículo:", matricula, "de la puerta:", puerta, "para el usuario:", email);
     this.areas.update(areas =>
       areas.map(area => {
         if (area.nombre === puerta) {
           return {
             ...area,
-            vehiculos: area.vehiculos.filter(vehiculos => vehiculos.matricula !== matricula)
+            vehiculos: area.vehiculos.filter(vehiculo =>
+              !(vehiculo.matricula === matricula && (email === '' || vehiculo.email_driver === email))
+            )
           };
         }
         return area;
       })
     );
-    this.areas.update(areas =>
-      areas.map(area => {
-        return {
-          ...area,
-          vehiculos: area.vehiculos.filter(vehiculo => vehiculo.email_driver !== email)
-        };
-      })
-    );
-
 
     this.guardarVehiculosEnLocalStorage();
   }
+
+
 
   obtenerVehiculos(puerta: string): Vehiculo[] {
     const area = this.areas().find(a => a.nombre === puerta);

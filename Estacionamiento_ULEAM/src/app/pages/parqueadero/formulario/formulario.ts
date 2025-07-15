@@ -33,6 +33,8 @@ export class Formulario implements OnInit {
 
   ngOnInit(): void {
     this.reservacion = this.auth.getReservacion() || false;
+    this.matricula = this.auth.getmatricula() || '';
+
   }
 
   get puerta_seleccionada() {
@@ -62,7 +64,7 @@ export class Formulario implements OnInit {
       return false;
     }
 
-    const tiposValidos = ['estudiante', 'docente', 'admin', 'visitante'];
+    const tiposValidos = ['estudiante', 'docente', 'administrativo', 'visitante'];
     if (!tiposValidos.includes(this.tipo_conductor)) {
       alert('Tipo de conductor no válido.');
       return false;
@@ -97,68 +99,105 @@ export class Formulario implements OnInit {
   }
 
   addcar_noAdmin(): void {
-    const reservacion = {
-      email: this.auth.getEmail() || '',
-      reservacion_realizada: true
-    };
+    const email = this.auth.getEmail() || '';
+    const matricula = this.matricula;
+
+    if (!email || !matricula) {
+      alert("Email o matrícula no disponibles.");
+      return;
+    }
+
     this.name_driver = this.auth.username()!;
     this.tipo_conductor = this.auth.rol()!;
     this.hora_llegada = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    if (this.fomulario_validaciones()) {
-      const vehiculo = {
-        matricula: this.matricula,
-        name_driver: this.name_driver,
-        email_driver: this.auth.getEmail() || '',
-        tipo_usuario: this.tipo_conductor,
-        area_estacionamiento: this.area_estacionamiento,
-        hora_entrada: this.hora_llegada
-      };
-
-      this.paqueaderoService.agregarVehiculo(vehiculo, this.area_estacionamiento);
-      this.paqueaderoService.guardarVehiculosEnLocalStorage();
-      this.resetForm();
-      alert('Vehículo agregado correctamente');
-
-      // Actualizar en la base de datos que el usuario ya reservó
-      const email = this.auth.getEmail();
-      const reservacion_realizada = true;
-      console.log("Reservacion realizada: ", reservacion_realizada, " Email: ", email);
-      if (email) {
-        this.http.post('http://localhost:3000/api/reservar', { reservacion_realizada, email }).subscribe((res: any) => {
-          if (res.success) {
-            this.reservacion = true;
-            this.auth.setReservacion(reservacion); 
-          } else {
-            console.error("No se pudo actualizar la reservacion");
-          }
-        });
-      }
+    if (!this.fomulario_validaciones()) {
+      return;
     }
+
+    const reservacion = {
+      email,
+      reservacion_realizada: true,
+      matricula
+    };
+
+    const vehiculo = {
+      matricula,
+      name_driver: this.name_driver,
+      email_driver: email,
+      tipo_usuario: this.tipo_conductor,
+      area_estacionamiento: this.area_estacionamiento,
+      hora_entrada: this.hora_llegada
+    };
+
+    this.paqueaderoService.agregarVehiculo(vehiculo, this.area_estacionamiento);
+    this.paqueaderoService.guardarVehiculosEnLocalStorage();
+    // this.auth.
+    this.resetForm();
+    alert('Vehículo agregado correctamente');
+
+    this.http.post('http://localhost:3000/api/reservar', reservacion).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.reservacion = true;
+          this.auth.setReservacion(reservacion);
+
+          // Refrescar datos del usuario (matrícula, reservación)
+          this.auth.refreshUserData(email);
+        } else {
+          console.error("No se pudo actualizar la reservación");
+        }
+      },
+      error: (err) => {
+        console.error("Error al conectar con el backend:", err);
+      }
+    });
+
   }
 
   cancelarReservacion(): void {
-    const reservacion_realizada = false;
+    const email = this.auth.getEmail() || '';
+    const matricula = this.auth.matricula() || '';
     const reservacion = {
-      email: this.auth.getEmail() || '',
-      reservacion_realizada: false
+      email,
+      reservacion_realizada: false,
+      matricula: this.matricula
     };
+
+    // Actualizar signal y almacenamiento local
     this.auth.setReservacion(reservacion);
-    localStorage.setItem('reservacion', 'false');
 
-    this.paqueaderoService.eliminarVehiculo(this.matricula, this.area_estacionamiento, reservacion.email);
+    // Eliminar el vehículo del parqueadero
+    console.log("Matricuna cancelar" + matricula);
+    const areaDetectada = this.paqueaderoService.areas().find(area =>
+      area.vehiculos.some(v =>
+        v.matricula === matricula && v.email_driver === email
+      )
+    )?.nombre;
 
-    if (reservacion.email){
-        this.http.post('http://localhost:3000/api/reservar', { reservacion_realizada, email: reservacion.email }).subscribe((res: any) => {
-          if (res.success) {
-            this.reservacion = true;
-            this.auth.setReservacion(reservacion); 
-          } else {
-            console.error("No se pudo actualizar la reservacion");
-          }
-        });
+    if (!areaDetectada) {
+      console.error("No se pudo determinar el área de estacionamiento del vehículo");
+      alert("Error al cancelar: No se pudo encontrar el vehículo");
+      return;
     }
 
+    this.paqueaderoService.eliminarVehiculo(matricula, areaDetectada, email);
+
+    // Actualizar el backend con la cancelación
+    if (email) {
+      this.http.post('http://localhost:3000/api/reservar', reservacion).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            console.log("Reservación cancelada correctamente en el backend.");
+          } else {
+            console.error("No se pudo actualizar la reservación en el backend.");
+          }
+        },
+        error: (err) => {
+          console.error("Error al cancelar la reservación:", err);
+        }
+      });
+    }
 
     alert('Reservación cancelada');
   }

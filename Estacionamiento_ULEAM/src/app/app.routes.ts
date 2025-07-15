@@ -20,7 +20,7 @@ export const routes: Routes = [
   { path: 'admin', 
     component: ParqueaderoAdmin,
     canActivate: [Authseguridad],
-    data: { rol: 'admin'}
+    data: { rol: 'administrativo'}
    },
 
   { path: '**', redirectTo: 'login' } // Redirección para rutas no encontradas

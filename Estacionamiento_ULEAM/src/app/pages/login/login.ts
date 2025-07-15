@@ -27,12 +27,12 @@ export class LoginComponent {
     this.auth.login(this.email, this.password).subscribe({
       next: (res: any) => {
         if (res.success) {
-          if (res.rol === 'admin') {
-            this.guardarUsuario(res.nombre, res.email, res.rol, res.estacionamiento);
+          if (res.rol === 'administrativo') {
+            this.guardarUsuario(res.nombre, res.email, res.rol, res.estacionamiento, res.matricula);
             this.router.navigate(['/admin']);
             
           } else {
-            this.guardarUsuario(res.nombre, res.email, res.rol, res.estacionamiento);
+            this.guardarUsuario(res.nombre, res.email, res.rol, res.estacionamiento, res.matricula);
             this.router.navigate(['/usuario']);
           }
         } else {
@@ -45,8 +45,8 @@ export class LoginComponent {
     });
   }
 
-  guardarUsuario(username: string, email: string, rol: string, reservacion: boolean): void {
+  guardarUsuario(username: string, email: string, rol: string, reservacion: boolean, matricula: string): void {
 
-    this.auth.saveUserData(username, email, rol, reservacion);
+    this.auth.saveUserData(username, email, rol, reservacion, matricula);
   }
 };

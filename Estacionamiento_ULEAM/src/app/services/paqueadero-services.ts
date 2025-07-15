@@ -3,6 +3,7 @@ import { Injectable, signal } from '@angular/core';
 export interface Vehiculo {
   matricula: string;
   name_driver: string;
+  email_driver: string;
   tipo_usuario: string;
   area_estacionamiento: string;
   hora_entrada: string;
@@ -59,20 +60,26 @@ export class ParqueaderoService {
     this.guardarVehiculosEnLocalStorage();
   }
 
-  eliminarVehiculo(matricula: string, puerta: string): void {
+  eliminarVehiculo(matricula: string, puerta: string, email: string): void {
+    console.log("Eliminando vehículo:", matricula, "de la puerta:", puerta, "para el usuario:", email);
     this.areas.update(areas =>
       areas.map(area => {
         if (area.nombre === puerta) {
           return {
             ...area,
-            vehiculos: area.vehiculos.filter(v => v.matricula !== matricula)
+            vehiculos: area.vehiculos.filter(vehiculo =>
+              !(vehiculo.matricula === matricula && (email === '' || vehiculo.email_driver === email))
+            )
           };
         }
         return area;
       })
     );
+
     this.guardarVehiculosEnLocalStorage();
   }
+
+
 
   obtenerVehiculos(puerta: string): Vehiculo[] {
     const area = this.areas().find(a => a.nombre === puerta);
@@ -82,4 +89,5 @@ export class ParqueaderoService {
   obtenerArea(puerta: string): AreaEstacionamiento | undefined {
     return this.areas().find(a => a.nombre === puerta);
   }
+
 }

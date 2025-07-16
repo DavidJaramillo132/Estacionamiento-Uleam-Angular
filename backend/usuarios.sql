@@ -10,8 +10,6 @@ create table if not exists usuario (
     matricula varchar(25) unique
 )
 
--- Asegúrate de haber creado la tabla usuario antes de ejecutar esto
-
 INSERT INTO usuario (nombre, email, contrasena, rol) VALUES
   ('Andrea López',     'e1315844983@live.uleam.edu.ec', '1234', 'estudiante'),
   ('Carlos Pérez',     'e1315844984@live.uleam.edu.ec', '1234', 'estudiante'),

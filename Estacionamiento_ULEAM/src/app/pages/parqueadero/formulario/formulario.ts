@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ParqueaderoService } from '../../../services/paqueadero-services';
 import { FormsModule } from '@angular/forms';
 import { AutenticadoUserService } from '../../../services/auth';
-import { HttpClient } from '@angular/common/http';
+import { ReservacionesServices } from '../../../services/reservaciones-services';
 
 @Component({
   selector: 'app-formulario',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './formulario.html',
-  styleUrl: './formulario.scss'
+  styleUrls: ['./formulario.scss'] // Corregido aquí
 })
 export class Formulario implements OnInit {
   matricula: string = '';
@@ -28,13 +28,12 @@ export class Formulario implements OnInit {
   constructor(
     private paqueaderoService: ParqueaderoService,
     public auth: AutenticadoUserService,
-    private http: HttpClient
+    private reservacionesService: ReservacionesServices
   ) { }
 
   ngOnInit(): void {
     this.reservacion = this.auth.getReservacion() || false;
     this.matricula = this.auth.getmatricula() || '';
-
   }
 
   get puerta_seleccionada() {
@@ -84,11 +83,12 @@ export class Formulario implements OnInit {
       const vehiculo = {
         matricula: this.matricula,
         name_driver: this.name_driver,
-        email_driver: "",
+        email_driver: '',
         tipo_usuario: this.tipo_conductor,
         area_estacionamiento: this.area_estacionamiento,
         hora_entrada: this.hora_entrada
       };
+
       alert('Vehículo agregado correctamente');
       this.paqueaderoService.agregarVehiculo(vehiculo, this.area_estacionamiento);
       this.paqueaderoService.guardarVehiculosEnLocalStorage();
@@ -132,17 +132,14 @@ export class Formulario implements OnInit {
 
     this.paqueaderoService.agregarVehiculo(vehiculo, this.area_estacionamiento);
     this.paqueaderoService.guardarVehiculosEnLocalStorage();
-    // this.auth.
     this.resetForm();
     alert('Vehículo agregado correctamente');
 
-    this.http.post('http://localhost:3000/api/reservar', reservacion).subscribe({
+    this.reservacionesService.enviarReservacion(reservacion).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.reservacion = true;
           this.auth.setReservacion(reservacion);
-
-          // Refrescar datos del usuario (matrícula, reservación)
           this.auth.refreshUserData(email);
         } else {
           console.error("No se pudo actualizar la reservación");
@@ -152,23 +149,19 @@ export class Formulario implements OnInit {
         console.error("Error al conectar con el backend:", err);
       }
     });
-
   }
 
   cancelarReservacion(): void {
     const email = this.auth.getEmail() || '';
-    const matricula = this.auth.matricula() || '';
+    const matricula = this.auth.getmatricula() || '';
     const reservacion = {
       email,
       reservacion_realizada: false,
-      matricula: this.matricula
+      matricula
     };
 
-    // Actualizar signal y almacenamiento local
     this.auth.setReservacion(reservacion);
 
-    // Eliminar el vehículo del parqueadero
-    console.log("Matricuna cancelar" + matricula);
     const areaDetectada = this.paqueaderoService.areas().find(area =>
       area.vehiculos.some(v =>
         v.matricula === matricula && v.email_driver === email
@@ -183,21 +176,18 @@ export class Formulario implements OnInit {
 
     this.paqueaderoService.eliminarVehiculo(matricula, areaDetectada, email);
 
-    // Actualizar el backend con la cancelación
-    if (email) {
-      this.http.post('http://localhost:3000/api/reservar', reservacion).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            console.log("Reservación cancelada correctamente en el backend.");
-          } else {
-            console.error("No se pudo actualizar la reservación en el backend.");
-          }
-        },
-        error: (err) => {
-          console.error("Error al cancelar la reservación:", err);
+    this.reservacionesService.enviarReservacion(reservacion).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          console.log("Reservación cancelada correctamente en el backend.");
+        } else {
+          console.error("No se pudo actualizar la reservación en el backend.");
         }
-      });
-    }
+      },
+      error: (err) => {
+        console.error("Error al cancelar la reservación:", err);
+      }
+    });
 
     alert('Reservación cancelada');
   }

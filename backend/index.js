@@ -80,7 +80,6 @@ app.get("/api/usuario/:email", async (req, res) => {
 });
 
 
-
 app.post("/api/reservar", async (req, res) => {
   const { email, reservacion_realizada, matricula } = req.body;
 
@@ -89,8 +88,6 @@ app.post("/api/reservar", async (req, res) => {
   }
 
   try {
-    console.log("Reservación actualizada para el usuario:", email, "con estado nuevo:", reservacion_realizada, "y matrícula:", matricula);
-
     const result = await db.query(
       "UPDATE usuario SET reservacion_estacionamiento = $1, matricula = $2 WHERE email = $3",
       [reservacion_realizada, matricula, email]
@@ -127,10 +124,6 @@ app.get('/api/reservacion/:email', async (req, res) => {
     res.status(500).json({ error: 'Error del servidor' });
   }
 });
-
-
-
-
 
 
 

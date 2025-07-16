@@ -8,7 +8,7 @@
         </p>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <div *ngFor="let vehiculo of puerta.vehiculos" class="bg-white rounded-2xl shadow-md p-5 border-l-4">
+            <div *ngFor="let vehiculo of puerta.vehiculos" class="bg-white rounded-2xl shadow-md p-5 ">
                 <h3 class="text-lg font-bold text-gray-800">{{ vehiculo.matricula }}</h3>
                 <p class="text-sm text-gray-600"><strong>Conductor:</strong> {{ vehiculo.name_driver }}</p>
                 <p class="text-sm text-gray-600"><strong>Tipo:</strong> {{ vehiculo.tipo_usuario }}</p>
@@ -25,5 +25,4 @@
             </div>
         </div>
     </div>
-
 </div>

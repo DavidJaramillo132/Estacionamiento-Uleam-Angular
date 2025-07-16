@@ -2,8 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AutenticadoUserService } from '../../services/auth'; // Importa el servicio de autenticación
-// import { HttpClientModule } from '@angular/common/http';
+import { AutenticadoUserService } from '../../services/auth';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +29,7 @@ export class LoginComponent {
           if (res.rol === 'administrativo') {
             this.guardarUsuario(res.nombre, res.email, res.rol, res.estacionamiento, res.matricula);
             this.router.navigate(['/admin']);
-            
+
           } else {
             this.guardarUsuario(res.nombre, res.email, res.rol, res.estacionamiento, res.matricula);
             this.router.navigate(['/usuario']);

@@ -10,7 +10,7 @@ import { ReservacionesServices } from '../../../services/reservaciones-services'
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './formulario.html',
-  styleUrls: ['./formulario.scss'] // Corregido aquí
+  styleUrls: ['./formulario.scss'] 
 })
 export class Formulario implements OnInit {
   matricula: string = '';
@@ -47,14 +47,14 @@ export class Formulario implements OnInit {
     }
 
     if (!this.matriculaRegex.test(this.matricula)) {
-      alert('La matrícula debe tener el formato AAA-0000');
+      alert('La matricula debe tener el formato AAA-0000');
       return false;
     }
 
     if (this.paqueaderoService.areas().some(area =>
       area.vehiculos.some(vehiculo => vehiculo.matricula === this.matricula)
     )) {
-      alert('La matrícula ya está registrada en el sistema.');
+      alert('La matricula ya está registrada en el sistema.');
       return false;
     }
 
@@ -89,7 +89,7 @@ export class Formulario implements OnInit {
         hora_entrada: this.hora_entrada
       };
 
-      alert('Vehículo agregado correctamente');
+      alert('Vehiculo agregado correctamente');
       this.paqueaderoService.agregarVehiculo(vehiculo, this.area_estacionamiento);
       this.paqueaderoService.guardarVehiculosEnLocalStorage();
       this.resetForm();
@@ -103,7 +103,7 @@ export class Formulario implements OnInit {
     const matricula = this.matricula;
 
     if (!email || !matricula) {
-      alert("Email o matrícula no disponibles.");
+      alert("Email o matricula no disponibles.");
       return;
     }
 
@@ -142,7 +142,7 @@ export class Formulario implements OnInit {
           this.auth.setReservacion(reservacion);
           this.auth.refreshUserData(email);
         } else {
-          console.error("No se pudo actualizar la reservación");
+          console.error("No se pudo actualizar la reservacion");
         }
       },
       error: (err) => {
@@ -169,8 +169,8 @@ export class Formulario implements OnInit {
     )?.nombre;
 
     if (!areaDetectada) {
-      console.error("No se pudo determinar el área de estacionamiento del vehículo");
-      alert("Error al cancelar: No se pudo encontrar el vehículo");
+      console.error("No se pudo determinar el área de estacionamiento del vehiculo");
+      alert("Error al cancelar: No se pudo encontrar el vehiculo");
       return;
     }
 
@@ -179,17 +179,17 @@ export class Formulario implements OnInit {
     this.reservacionesService.enviarReservacion(reservacion).subscribe({
       next: (res: any) => {
         if (res.success) {
-          console.log("Reservación cancelada correctamente en el backend.");
+          console.log("Reservacion cancelada correctamente en el backend.");
         } else {
-          console.error("No se pudo actualizar la reservación en el backend.");
+          console.error("No se pudo actualizar la reservacion en el backend.");
         }
       },
       error: (err) => {
-        console.error("Error al cancelar la reservación:", err);
+        console.error("Error al cancelar la reservacion:", err);
       }
     });
 
-    alert('Reservación cancelada');
+    alert('Reservacion cancelada');
   }
 
   resetForm(): void {

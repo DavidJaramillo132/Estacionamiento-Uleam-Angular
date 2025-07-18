@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -22,7 +22,7 @@ export class LoginComponent {
   constructor(private router: Router, private auth: AutenticadoUserService) { }
 
   login(): void {
-    console.log('Intentando iniciar sesión con:', this.email, this.password);
+    console.log('Intentando iniciar sesion con:', this.email, this.password);
     this.auth.login(this.email, this.password).subscribe({
       next: (res: any) => {
         if (res.success) {

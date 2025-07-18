@@ -12,17 +12,12 @@ import { AutenticadoUserService } from '../../../services/auth'; // Importa el s
   styleUrl: './navbar.scss'
 })
 
-export class Navbar implements OnInit {
+export class Navbar {
   username: string = '';
   email: string = '';
   rol: string = '';
   constructor(private router: Router, public auth: AutenticadoUserService) {}
-
-  ngOnInit(): void {
-
-  }
   
-
   logout(): void {
     this.auth.logout();
   }

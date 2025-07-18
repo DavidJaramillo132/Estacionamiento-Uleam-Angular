@@ -23,13 +23,13 @@ export class ParqueaderoAdmin {
     );
 
     if (!area) {
-      alert(`Vehículo con matrícula ${matricula} no encontrado.`);
+      alert(`Vehiculo con matricula ${matricula} no encontrado.`);
       return;
     }
     
     // Usar el método del servicio para eliminarlo correctamente
     this.parqueaderoServices.eliminarVehiculo(matricula, area.nombre, '');
-    alert(`Vehículo con matrícula ${matricula} ha salido del parqueadero.`);
+    alert(`Vehiculo con matricula ${matricula} ha salido del parqueadero.`);
   }
 
   puertas(): AreaEstacionamiento[] {

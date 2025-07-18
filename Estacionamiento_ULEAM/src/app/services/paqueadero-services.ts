@@ -20,7 +20,7 @@ export interface AreaEstacionamiento {
 })
 export class ParqueaderoService {
 
-  // Lista de áreas de estacionamiento usando la interfaz
+  // Lista de areas de estacionamiento usando la interfaz
   areas = signal<AreaEstacionamiento[]>([
     {
       nombre: 'puerta1',
@@ -61,7 +61,7 @@ export class ParqueaderoService {
   }
 
   eliminarVehiculo(matricula: string, puerta: string, email: string): void {
-    console.log("Eliminando vehículo:", matricula, "de la puerta:", puerta, "para el usuario:", email);
+    console.log("Eliminando vehiculo:", matricula, "de la puerta:", puerta, "para el usuario:", email);
     this.areas.update(areas =>
       areas.map(area => {
         if (area.nombre === puerta) {
@@ -78,8 +78,6 @@ export class ParqueaderoService {
 
     this.guardarVehiculosEnLocalStorage();
   }
-
-
 
   obtenerVehiculos(puerta: string): Vehiculo[] {
     const area = this.areas().find(a => a.nombre === puerta);

@@ -6,9 +6,9 @@ import { ParqueaderoAdmin } from './pages/parqueadero/parqueadero-admin/parquead
 import { UsuarioNormal } from './pages/usuario-normal/usuario-normal';
 import { Authseguridad } from './seguridad/auth-guard';
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirigir raíz a /login
+  { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirigir raiz a /login
 
-  { path: 'login', component: LoginComponent }, // Componente de login
+  { path: 'login', component: LoginComponent }, 
 
   { path: 'usuario', 
     component: UsuarioNormal,

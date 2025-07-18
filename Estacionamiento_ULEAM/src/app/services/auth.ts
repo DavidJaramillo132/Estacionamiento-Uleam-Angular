@@ -15,6 +15,7 @@ export interface Reservacion {
 export class AutenticadoUserService {
   private apiLoginUrl = 'http://localhost:3000/api/login';
   private apiReservacionUrl = 'http://localhost:3000/api/reservacion';
+  private apiusuarioUrl = 'http://localhost:3000/api/usuario';
 
 
   username = signal<string | null>(localStorage.getItem('user'));
@@ -32,25 +33,22 @@ export class AutenticadoUserService {
 
   obtener_matricula(email: string): Observable<string | null> {
     return new Observable<string | null>((observer) => {
-      this.http.get(`http://localhost:3000/api/usuario/${email}`).subscribe({
+      this.http.get(`${this.apiusuarioUrl}/${email}`).subscribe({
         next: (res: any) => {
           if (res.success) {
             this.matricula.set(res.matricula);
             observer.next(res.matricula);
           } else {
-            console.warn("Usuario no encontrado.");
             observer.next(null);
           }
           observer.complete();
         },
         error: (err) => {
-          console.error("Error al obtener la matrícula:", err);
           observer.error(err);
         }
       });
     });
   }
-
 
   saveUserData(username: string, email: string, rol: string, reservacion: boolean, matricula: string): void {
     localStorage.setItem('user', username);
@@ -87,11 +85,9 @@ export class AutenticadoUserService {
     return this.http.get<{ reservacion: boolean }>(url);
   }
 
-
   setReservacion(reservacion: Reservacion): void {
     this.reservacion.set(reservacion.reservacion_realizada);
     localStorage.setItem('reservacion', reservacion.reservacion_realizada.toString());
-    console.log("Reservación guardada:", this.reservacion());
   }
 
 
@@ -107,7 +103,7 @@ export class AutenticadoUserService {
         }
       },
       error: (err) => {
-        console.error('Error actualizando matrícula:', err);
+        console.error('Error actualizando matricula:', err);
       }
     });
 
@@ -117,13 +113,10 @@ export class AutenticadoUserService {
         localStorage.setItem('reservacion', res.reservacion.toString());
       },
       error: (err) => {
-        console.error('Error actualizando reservación:', err);
+        console.error('Error actualizando reservacion:', err);
       }
     });
   }
-
-
-
 
   getusername(): string | null {
     return this.username();
@@ -138,14 +131,11 @@ export class AutenticadoUserService {
   }
 
   getReservacion(): boolean {
-    console.log("Reservación actual:", this.reservacion());
     return this.reservacion();
   }
 
   getmatricula(): string | null {
     return this.matricula();
   }
-
-
 
 }

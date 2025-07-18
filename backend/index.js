@@ -1,4 +1,7 @@
+const path = require("path");
+
 const express = require("express"); // Es para crear el servidor web
+
 const cors = require("cors"); // Es para permitir solicitudes de diferentes dominios
 
 const { Pool } = require("pg"); // Es para conectarse a la base de datos PostgreSQL
@@ -9,14 +12,21 @@ const port = 3000; // Puerto en el que se ejecutará el servidor
 app.use(cors());
 app.use(express.json());
 
-// Configuración de la conexión a la base de datos PostgreSQL
+// Configuración de la conexión a lq base de datos PostgreSQL
+require('dotenv').config();
+
 const db = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "parqueadero",
-  password: "postgres",
-  port: 5425,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
+
 
 
 app.post("/api/login/", async (req, res) => {
@@ -124,12 +134,17 @@ app.get('/api/reservacion/:email', async (req, res) => {
   }
 });
 
-
 app.use(express.static(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM')));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM/index.html'));
 });
+
+// Iniciar el servidor
+app.listen(port, () => {
+  console.log(`Servidor corriendo en http://localhost:${port}`);
+});
+
 
 // app.listen(port, () => {
 //   console.log(`Servidor corriendo en http://localhost:${port}`);

@@ -34,7 +34,6 @@ app.post("/api/login/", async (req, res) => {
         success: true,
         nombre: usuario.nombre,
         email: usuario.email,
-        // password: usuario.contrasena,
         rol: usuario.rol,
         estacionamiento: usuario.reservacion_estacionamiento,
         matricula: usuario.matricula,
@@ -126,7 +125,12 @@ app.get('/api/reservacion/:email', async (req, res) => {
 });
 
 
+app.use(express.static(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM')));
 
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM/index.html'));
 });
+
+// app.listen(port, () => {
+//   console.log(`Servidor corriendo en http://localhost:${port}`);
+// });

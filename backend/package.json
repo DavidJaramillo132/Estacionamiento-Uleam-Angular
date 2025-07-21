@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "build": "cd ../Estacionamiento_ULEAM && npm install && npx ng build --configuration production"
+    "build": "echo 'no build step needed'"
   },
   "keywords": [],
   "author": "",

@@ -114,15 +114,15 @@ app.get('/api/reservacion/:email', async (req, res) => {
   }
 });
 
-// Servir archivos estáticos de Angular
-app.use(express.static(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM')));
-
-// Redirigir todas las rutas al index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM/src/index.html'));
-});
-
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
+
+// // Servir archivos estáticos de Angular
+// app.use(express.static(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM')));
+
+// // Redirigir todas las rutas al index.html
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM/src/index.html'));
+// });
 

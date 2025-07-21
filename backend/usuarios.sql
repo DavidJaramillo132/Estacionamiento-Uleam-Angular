@@ -7,7 +7,7 @@ create table if not exists usuario (
     rol varchar(50) not null default('estudiante'),
     reservacion_estacionamiento boolean not null default (false),
     matricula varchar(25) unique
-)
+);
 INSERT INTO usuario (nombre, email, contrasena, rol) VALUES
   ('Andrea López',     'e1315844983@live.uleam.edu.ec', '1234', 'estudiante'),
   ('Carlos Pérez',     'e1315844984@live.uleam.edu.ec', '1234', 'estudiante'),

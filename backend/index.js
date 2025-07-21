@@ -9,7 +9,9 @@ app.use(express.json());
 require('dotenv').config();
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: true
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 app.post("/api/login/", async (req, res) => {
   const { email, password } = req.body;

@@ -1,20 +1,12 @@
 const path = require("path");
-
-const express = require("express"); // Es para crear el servidor web
-
-const cors = require("cors"); // Es para permitir solicitudes de diferentes dominios
-
-const { Pool } = require("pg"); // Es para conectarse a la base de datos PostgreSQL
-
-const app = express(); // Crear una instancia de la aplicación Express
-const port = 3000; // Puerto en el que se ejecutará el servidor
-
+const express = require("express"); 
+const cors = require("cors"); 
+const { Pool } = require("pg");
+const app = express(); 
+const port = 3000; 
 app.use(cors());
 app.use(express.json());
-
-// Configuración de la conexión a lq base de datos PostgreSQL
 require('dotenv').config();
-
 const db = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -22,16 +14,11 @@ const db = new Pool({
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
   ssl: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false
+  }
 });
-
-
-
-
 app.post("/api/login/", async (req, res) => {
   const { email, password } = req.body;
-  // Validar que se reciban los campos necesarios
   try {
     const result = await db.query(
       "SELECT * FROM usuario WHERE email = $1 AND contrasena = $2",
@@ -80,22 +67,19 @@ app.get("/api/usuario/:email", async (req, res) => {
       });
     }
   } catch (err) {
-    console.error("Error al obtener la matrícula:", err);
+    console.error("Error al obtener la matricula:", err);
     res.status(500).json({
       success: false,
       message: "Error interno del servidor"
     });
   }
 });
-
-
 app.post("/api/reservar", async (req, res) => {
   const { email, reservacion_realizada, matricula } = req.body;
 
   if (!email) {
     return res.status(400).json({ success: false, message: "Email es requerido" });
   }
-
   try {
     const result = await db.query(
       "UPDATE usuario SET reservacion_estacionamiento = $1, matricula = $2 WHERE email = $3",
@@ -112,20 +96,16 @@ app.post("/api/reservar", async (req, res) => {
     res.status(500).json({ success: false, message: "Error del servidor" });
   }
 });
-
 app.get('/api/reservacion/:email', async (req, res) => {
   const email = req.params.email;
-
   try {
     const result = await db.query(
       'SELECT reservacion_estacionamiento FROM usuario WHERE email = $1',
       [email]
     );
-
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
-
     const reservacion = result.rows[0].reservacion_estacionamiento;
     res.json({ reservacion: !!reservacion }); // convierte a booleano
   } catch (error) {
@@ -134,18 +114,12 @@ app.get('/api/reservacion/:email', async (req, res) => {
   }
 });
 
-app.use(express.static(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM')));
+// app.use(express.static(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM')));
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM/index.html'));
+// });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM/index.html'));
-});
-
-// Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
 
-
-// app.listen(port, () => {
-//   console.log(`Servidor corriendo en http://localhost:${port}`);
-// });

@@ -1,5 +1,4 @@
 create extension if not exists pgcrypto;
-
 create table if not exists usuario (
     id_usuario uuid primary key default gen_random_uuid(),
     nombre varchar(100) not null,
@@ -9,7 +8,6 @@ create table if not exists usuario (
     reservacion_estacionamiento boolean not null default (false),
     matricula varchar(25) unique
 )
-
 INSERT INTO usuario (nombre, email, contrasena, rol) VALUES
   ('Andrea López',     'e1315844983@live.uleam.edu.ec', '1234', 'estudiante'),
   ('Carlos Pérez',     'e1315844984@live.uleam.edu.ec', '1234', 'estudiante'),

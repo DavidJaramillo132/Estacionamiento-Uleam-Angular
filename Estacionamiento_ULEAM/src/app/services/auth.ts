@@ -17,7 +17,6 @@ export class AutenticadoUserService {
   private apiReservacionUrl = 'http://localhost:3000/api/reservacion';
   private apiusuarioUrl = 'http://localhost:3000/api/usuario';
 
-
   username = signal<string | null>(localStorage.getItem('user'));
   rol = signal<string | null>(localStorage.getItem('rol'));
   email = signal<string | null>(localStorage.getItem('email'));

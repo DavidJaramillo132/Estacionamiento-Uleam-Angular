@@ -45,30 +45,25 @@ export class Formulario implements OnInit {
       alert('Por favor, complete todos los campos.');
       return false;
     }
-
     if (!this.matriculaRegex.test(this.matricula)) {
       alert('La matricula debe tener el formato AAA-0000');
       return false;
     }
-
     if (this.paqueaderoService.areas().some(area =>
       area.vehiculos.some(vehiculo => vehiculo.matricula === this.matricula)
     )) {
       alert('La matricula ya está registrada en el sistema.');
       return false;
     }
-
     if (this.name_driver.length > 50) {
       alert('El nombre del conductor no puede exceder los 50 caracteres.');
       return false;
     }
-
     const tiposValidos = ['estudiante', 'docente', 'administrativo', 'visitante'];
     if (!tiposValidos.includes(this.tipo_conductor)) {
       alert('Tipo de conductor no válido.');
       return false;
     }
-
     if (this.puerta_seleccionada &&
       this.puerta_seleccionada.vehiculos.length >= this.puerta_seleccionada.capacidad) {
       alert('No hay espacio disponible en la ' + this.area_estacionamiento);
@@ -88,7 +83,6 @@ export class Formulario implements OnInit {
         area_estacionamiento: this.area_estacionamiento,
         hora_entrada: this.hora_entrada
       };
-
       alert('Vehiculo agregado correctamente');
       this.paqueaderoService.agregarVehiculo(vehiculo, this.area_estacionamiento);
       this.paqueaderoService.guardarVehiculosEnLocalStorage();
@@ -101,26 +95,21 @@ export class Formulario implements OnInit {
   addcar_noAdmin(): void {
     const email = this.auth.getEmail() || '';
     const matricula = this.matricula;
-
     if (!email || !matricula) {
       alert("Email o matricula no disponibles.");
       return;
     }
-
     this.name_driver = this.auth.username()!;
     this.tipo_conductor = this.auth.rol()!;
     this.hora_llegada = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
     if (!this.fomulario_validaciones()) {
       return;
     }
-
     const reservacion = {
       email,
       reservacion_realizada: true,
       matricula
     };
-
     const vehiculo = {
       matricula,
       name_driver: this.name_driver,
@@ -129,12 +118,10 @@ export class Formulario implements OnInit {
       area_estacionamiento: this.area_estacionamiento,
       hora_entrada: this.hora_llegada
     };
-
     this.paqueaderoService.agregarVehiculo(vehiculo, this.area_estacionamiento);
     this.paqueaderoService.guardarVehiculosEnLocalStorage();
     this.resetForm();
     alert('Vehículo agregado correctamente');
-
     this.reservacionesService.enviarReservacion(reservacion).subscribe({
       next: (res: any) => {
         if (res.success) {

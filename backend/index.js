@@ -4,10 +4,10 @@ const cors = require("cors");
 const { Pool } = require("pg");
 const app = express(); 
 const port = process.env.PORT || 3000;
-app.use(cors({
-  origin: '*' 
-}));
 
+app.use(cors({
+  origin: '*'  
+}));
 
 app.use(express.json());
 require('dotenv').config();
@@ -18,14 +18,16 @@ const db = new Pool({
     rejectUnauthorized: false
   }
 });
-app.post("https://estacionamiento-uleam-angular-server.onrender.com/api/login/", async (req, res) => {
+
+
+app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
   try {
     const result = await db.query(
       "SELECT * FROM usuario WHERE email = $1 AND contrasena = $2",
       [email, password]
     );
-    if (result.rows.length == 1) {
+    if (result.rows.length === 1) {
       const usuario = result.rows[0];
       console.log("Usuario encontrado:", usuario);
       res.json({
@@ -43,11 +45,12 @@ app.post("https://estacionamiento-uleam-angular-server.onrender.com/api/login/",
       });
     }
   } catch (error) {
-    console.error("Error al iniciar sesion:", error);
+    console.error("Error al iniciar sesión:", error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
   }
 });
 
-app.get("https://estacionamiento-uleam-angular-server.onrender.com/api/usuario/:email", async (req, res) => {
+app.get("/api/usuario/:email", async (req, res) => {
   const { email } = req.params;
   console.log("Obteniendo matrícula para el usuario:", email);
   try {
@@ -55,7 +58,6 @@ app.get("https://estacionamiento-uleam-angular-server.onrender.com/api/usuario/:
       "SELECT matricula FROM usuario WHERE email = $1",
       [email]
     );
-
     if (result.rows.length === 1) {
       res.json({
         success: true,
@@ -68,14 +70,15 @@ app.get("https://estacionamiento-uleam-angular-server.onrender.com/api/usuario/:
       });
     }
   } catch (err) {
-    console.error("Error al obtener la matricula:", err);
+    console.error("Error al obtener la matrícula:", err);
     res.status(500).json({
       success: false,
       message: "Error interno del servidor"
     });
   }
 });
-app.post("https://estacionamiento-uleam-angular-server.onrender.com/api/reservar", async (req, res) => {
+
+app.post("/api/reservar", async (req, res) => {
   const { email, reservacion_realizada, matricula } = req.body;
 
   if (!email) {
@@ -97,7 +100,8 @@ app.post("https://estacionamiento-uleam-angular-server.onrender.com/api/reservar
     res.status(500).json({ success: false, message: "Error del servidor" });
   }
 });
-app.get('https://estacionamiento-uleam-angular-server.onrender.com/api/reservacion/:email', async (req, res) => {
+
+app.get('/api/reservacion/:email', async (req, res) => {
   const email = req.params.email;
   try {
     const result = await db.query(
@@ -116,14 +120,5 @@ app.get('https://estacionamiento-uleam-angular-server.onrender.com/api/reservaci
 });
 
 app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port} O https://estacionamiento-uleam-angular-server.onrender.com`);
+  console.log(`Servidor corriendo en http://localhost:${port}`);
 });
-
-// // Servir archivos estáticos de Angular
-// app.use(express.static(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM')));
-
-// // Redirigir todas las rutas al index.html
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../Estacionamiento_ULEAM/dist/Estacionamiento_ULEAM/src/index.html'));
-// });
-

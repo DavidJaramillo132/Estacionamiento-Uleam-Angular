@@ -5,7 +5,7 @@ const { Pool } = require("pg");
 const app = express(); 
 const port = process.env.PORT || 3000;
 app.use(cors({
-  origin: 'https://estacionamiento-uleam-angular.onrender.com' // cambia esto por tu URL real de frontend
+  origin: '*' 
 }));
 
 
@@ -18,7 +18,7 @@ const db = new Pool({
     rejectUnauthorized: false
   }
 });
-app.post("/api/login/", async (req, res) => {
+app.post("https://estacionamiento-uleam-angular-server.onrender.com/api/login/", async (req, res) => {
   const { email, password } = req.body;
   try {
     const result = await db.query(
@@ -47,7 +47,7 @@ app.post("/api/login/", async (req, res) => {
   }
 });
 
-app.get("/api/usuario/:email", async (req, res) => {
+app.get("https://estacionamiento-uleam-angular-server.onrender.com/api/usuario/:email", async (req, res) => {
   const { email } = req.params;
   console.log("Obteniendo matrícula para el usuario:", email);
   try {
@@ -75,7 +75,7 @@ app.get("/api/usuario/:email", async (req, res) => {
     });
   }
 });
-app.post("/api/reservar", async (req, res) => {
+app.post("https://estacionamiento-uleam-angular-server.onrender.com/api/reservar", async (req, res) => {
   const { email, reservacion_realizada, matricula } = req.body;
 
   if (!email) {
@@ -97,7 +97,7 @@ app.post("/api/reservar", async (req, res) => {
     res.status(500).json({ success: false, message: "Error del servidor" });
   }
 });
-app.get('/api/reservacion/:email', async (req, res) => {
+app.get('https://estacionamiento-uleam-angular-server.onrender.com/api/reservacion/:email', async (req, res) => {
   const email = req.params.email;
   try {
     const result = await db.query(
@@ -116,7 +116,7 @@ app.get('/api/reservacion/:email', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+  console.log(`Servidor corriendo en http://localhost:${port} O https://estacionamiento-uleam-angular-server.onrender.com`);
 });
 
 // // Servir archivos estáticos de Angular

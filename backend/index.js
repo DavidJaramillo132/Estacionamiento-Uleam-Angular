@@ -4,9 +4,14 @@ const cors = require("cors");
 const { Pool } = require("pg");
 const app = express(); 
 const port = process.env.PORT || 3000;
-app.use(cors());
+app.use(cors({
+  origin: 'https://estacionamiento-uleam-angular.onrender.com' // cambia esto por tu URL real de frontend
+}));
+
+
 app.use(express.json());
 require('dotenv').config();
+
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {

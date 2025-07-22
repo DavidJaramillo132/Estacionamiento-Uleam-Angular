@@ -12,7 +12,7 @@ export interface Reservacion {
   providedIn: 'root'
 })
 export class ReservacionesServices {
-  private apiUrl = 'http://localhost:3000/api/reservar';
+  private apiUrl = 'https://estacionamiento-uleam-angular-server.onrender.com/api/reservar';
 
   constructor(private http: HttpClient) {}
 

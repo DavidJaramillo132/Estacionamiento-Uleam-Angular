@@ -13,9 +13,9 @@ export interface Reservacion {
   providedIn: 'root'
 })
 export class AutenticadoUserService {
-  private apiLoginUrl = 'http://localhost:3000/api/login';
-  private apiReservacionUrl = 'http://localhost:3000/api/reservacion';
-  private apiusuarioUrl = 'http://localhost:3000/api/usuario';
+  private apiLoginUrl = 'https://estacionamiento-uleam-angular-server.onrender.com/api/login';
+  private apiReservacionUrl = 'https://estacionamiento-uleam-angular-server.onrender.com/api/reservacion';
+  private apiusuarioUrl = 'https://estacionamiento-uleam-angular-server.onrender.com/api/usuario';
 
   username = signal<string | null>(localStorage.getItem('user'));
   rol = signal<string | null>(localStorage.getItem('rol'));
